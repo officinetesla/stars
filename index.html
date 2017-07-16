@@ -63,7 +63,7 @@ window.requestAnimFrame = (function(){
 
 function render() {renderer.render(scene, camera);requestAnimFrame(render);}
 render();
-app.reset=function(){camera.position.z=0.001;};
+app.reset=function(){camera.position.z=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
 function toRadians(angle) {	return angle * (Math.PI / 180);}
 function toDegrees(angle) {	return angle * (180 / Math.PI);}
 };
