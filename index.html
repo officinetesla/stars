@@ -6,8 +6,7 @@
 #controls{position:absolute;z-index:100;top:20px;left:20px;background-color:transparent;}</style>
 <script>
 function myload(){
-var three = THREE;
-var scene = new three.Scene();
+var three = THREE;var scene=new three.Scene();
 var camera = new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
 var renderer = new three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,11 +49,7 @@ $(renderer.domElement).on('mousedown', function(e) {isDragging = true;})
 	var wd=e.originalEvent.wheelDelta;var dir=1;if(wd>0){dir=-1}
 	camera.position.z=camera.position.z+((dir*0.5)*camera.position.z);
 });
-/* */
-
-$(document).on('mouseup', function(e) {
-    isDragging = false;
-});
+$(document).on('mouseup', function(e) {isDragging = false;});
 
 // shim layer with setTimeout fallback
 window.requestAnimFrame = (function(){
@@ -66,11 +61,7 @@ window.requestAnimFrame = (function(){
         };
 })();
 
-function render() {
-    renderer.render(scene, camera);    
-    requestAnimFrame(render);
-}
-
+function render() {renderer.render(scene, camera);requestAnimFrame(render);}
 render();
 app.reset=function(){camera.position.z=0.001;};
 function toRadians(angle) {	return angle * (Math.PI / 180);}
