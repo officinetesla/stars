@@ -17,7 +17,7 @@ three.ImageUtils.crossOrigin = '';
 var material = new THREE.MeshBasicMaterial({color: 0xF0ff00 } );
 var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
-camera.position.z = 10;
+camera.position.z = 0.005;
 
 function addconstellation(name){for(var l=0;l<MYDATA[name].L.length;l++){if(MYDATA[name].L[l]){addline(MYDATA[name].L[l]);}}}
 function addline(L){var newline = new THREE.Geometry();
@@ -30,7 +30,7 @@ for(c in MYDATA){addconstellation(c);}
 var isDragging = false;
 var isZooming = false;
 var previousMousePosition = { x: 0, y: 0};
-var previousInitialZoom=10;
+var previousInitialZoom=0.005;
 $(renderer.domElement).on('mousedown', function(e) {isDragging = true;
 	//if(e.button==0){isDragging = true}
 	//else if(e.button==2){isZooming = true;previousInitalZoom=camera.position.z;if(e.stopPropagation){e.stopPropagation();}e.cancelBubble=true;return false;}
