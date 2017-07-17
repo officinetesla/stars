@@ -60,7 +60,6 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
         };
 })();
-
 function render() {renderer.render(scene, camera);requestAnimFrame(render);}
 render();
 app.reset=function(){camera.position.z=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
