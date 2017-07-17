@@ -1,6 +1,5 @@
 <!doctype html>
-<html>
-<head><title>STARS DEMO - officine tesla</title><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js">
+<html><head><title>STARS DEMO - officine tesla</title><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js">
 </script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
 #infoview{position:absolute;z-index:100;top:0px;padding-left:20px;background-color:rgba(255,255,255,0.5);}
@@ -22,10 +21,10 @@ var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
 camera.position.z = 0.005;
 
-app.addconstellation=function(name){for(var l=0;l<app.HAY.asterisms[name].length;l++){if(app.HAY.asterisms[name][l]){app.addline(app.HAY.asterisms[name][l]);}}};
-app.addline=function(L){var newline=new THREE.Geometry();var D;var sidx;
+app.addconstellation=function(name){for(var l=0;l<app.HAY.asterisms[name].length;l++){if(app.HAY.asterisms[name][l]){app.addline(app.HAY.asterisms[name][l],name);}}};
+app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
 	for(var s=0;s<L.length;s++){if(L[s]){if(L[s]!='null'){sidx=app.HAY.names[L[s].toLowerCase()];if(sidx){app.addstar(sidx);
-		D=app.HAY.stars[sidx];if(D){newline.vertices.push(new THREE.Vector3(D[0],D[1],D[2]));}
+		D=app.HAY.stars[sidx];if(D){app.HAY.stars[sidx][5]=CN;newline.vertices.push(new THREE.Vector3(D[0],D[1],D[2]));}
 		}}}}
 	scene.add(new THREE.Line(newline,linematerial));};	
 app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();star2.position.setX(D[0]);star2.position.setY(D[1]);star2.position.setZ(D[2]);
@@ -41,7 +40,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
 	raycaster.setFromCamera(mouse,camera);
     intersects = raycaster.intersectObjects(objects);
     if(intersects.length>0){var idx=intersects[0].object.AppData.idx;var d=app.HAY.stars[idx];
-        document.getElementById('infoview').innerHTML='Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
+        document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
 	/*Start dragging*/
 	if(!flag){isDragging = true;}
 })
@@ -133,4 +132,4 @@ app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
 </script>
 </head><body onload="myload()";><div id="infoview" style="color:#eeeeee;font-weight:bold;"> </div><div id="loading" style="color:#eeeeee;font-weight:bold;">loading resources from https://cdn.rawgit.com/CelestiaProject/Celestia/ ...<br/><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="color:#eeeeee;font-weight:bold;" style="display:none"><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a><br/>
-CLICK on stars for more info<br/>DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button></div></body>
+CLICK on stars for more info<br/>DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button></div></body></html>
