@@ -7,4 +7,5 @@ Check IT OUT!! https://rawgit.com/officinetesla/stars/master/
 * stars.dat
 * starnames.dat
 * asterism.dat
+
 Are fetched from https://github.com/CelestiaProject/Celestia/tree/master/data and directly parsed by the page.
