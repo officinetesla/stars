@@ -2,17 +2,18 @@
 <html><head><title>STARS DEMO - officine tesla</title><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.js">
 </script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
-#infoview{position:absolute;z-index:100;top:0px;padding-left:20px;background-color:rgba(255,255,255,0.5);}
-#controls{position:absolute;z-index:100;top:20px;padding-left:20px;background-color:transparent;}
-#loading{position:absolute;z-index:100;top:0px;left:0;height:100%;width:100%;padding-left:20px;background-color:transparent;}</style>
+#infoview{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:rgba(255,255,255,0.5);width:96%}
+#controls{position:absolute;z-index:100;top:20px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
+#loading{position:absolute;z-index:100;top:0px;left:0;margin-left:2%;background-color:transparent;width:96%;}
+#loading a,#controls a{float:right;}</style>
 <script>
 function myload(){var objects = [];var three = THREE;var scene=new three.Scene();
 var camera = new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
 var renderer = new three.WebGLRenderer();renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-//var geometry = new three.BoxGeometry(1, 1, 1);
-var geometry = new three.SphereGeometry(0.75, 32, 32 );
+//var geometry = new three.BoxGeometry(0.5, 0.5, 0.5);
+var geometry = new three.SphereGeometry(0.50, 32, 32 );
 three.ImageUtils.crossOrigin = '';
 var material = new THREE.MeshBasicMaterial({color:0xF0ff00});
 var star = new three.Mesh(geometry, material);
@@ -75,7 +76,7 @@ app.DATALOAD();
 
 window.app={};
 app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
-app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
+app.dataloaded=0;app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
 app.DATALOAD=function(){
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read stars.dat into app.HAY.stars */
@@ -162,13 +163,19 @@ app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded
 		for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}
 		app.render();
 		document.getElementById('loading').style.display='none';
+		document.getElementById('infoview').style.display='initial';
 		document.getElementById('controls').style.display='initial';
-}};
-app.zodiactoggle=function(elm){
-	if(elm.innerHTML=='zodiac'){app.clear();elm.innerHTML='all';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
-	else{elm.innerHTML='zodiac';app.clear();for(k in app.HAY.asterisms){app.addconstellation(k)}}
+}else{app.dataloaded++;document.getElementById('loadingspan').innerHTML='loading... '+app.dataloaded+'/3';}};
+app.zodiactoggle=function(elm){objects=[];app.clear();
+	if(elm.innerHTML=='zodiac only'){elm.innerHTML='all constallations';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
+	else{elm.innerHTML='zodiac only';for(k in app.HAY.asterisms){app.addconstellation(k)}}	
+};
+app.starstoggle=function(elm){objects=[];app.clear();
+	if(elm.innerHTML.indexOf('stars')>-1){elm.innerHTML='asterisms';for(k in app.HAY.stars){app.addstar(k)}}
+	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}	
 };
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
 </script>
-</head><body onload="myload()";><div id="infoview" style="color:#eeeeee;font-weight:bold;"> </div><div id="loading" style="color:#eeeeee;font-weight:bold;">loading resources from https://cdn.rawgit.com/CelestiaProject/Celestia/ ...<br/><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="color:#eeeeee;font-weight:bold;" style="display:none"><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a><br/>
-CLICK on stars for more info<br/>DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button><button onclick="app.zodiactoggle(this)">all</button></div></body></html>
+</head><body onload="myload()";><div id="infoview" style="color:#eeeeee;font-weight:bold;display:none;">CLICK on stars for more info</div><div
+	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
+DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button> <button onclick="app.zodiactoggle(this)">all constallations</button> <button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button></div></body></html>
