@@ -6,17 +6,15 @@
 #controls{position:absolute;z-index:100;top:20px;padding-left:20px;background-color:transparent;}
 #loading{position:absolute;z-index:100;top:0px;left:0;height:100%;width:100%;padding-left:20px;background-color:transparent;}</style>
 <script>
-function myload(){
-var three = THREE;var scene=new three.Scene();
-var objects = [];
+function myload(){var objects = [];var three = THREE;var scene=new three.Scene();
 var camera = new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-var renderer = new three.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+var renderer = new three.WebGLRenderer();renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var geometry = new three.BoxGeometry(1, 1, 1);
+//var geometry = new three.BoxGeometry(1, 1, 1);
+var geometry = new three.SphereGeometry(0.75, 32, 32 );
 three.ImageUtils.crossOrigin = '';
-var material = new THREE.MeshBasicMaterial({color: 0xF0ff00 } );
+var material = new THREE.MeshBasicMaterial({color:0xF0ff00});
 var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
 camera.position.z = 0.005;
@@ -46,8 +44,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
 })
 .on('mousemove', function(e) {
     var deltaMove={x: e.offsetX-previousMousePosition.x,y: e.offsetY-previousMousePosition.y};
-    if(isDragging) {            
-        var deltaRotationQuaternion = new three.Quaternion()
+    if(isDragging){var deltaRotationQuaternion = new three.Quaternion()
             .setFromEuler(new three.Euler(toRadians(deltaMove.y * 1),toRadians(deltaMove.x * 1),0,'XYZ'));        
         scene.quaternion.multiplyQuaternions(deltaRotationQuaternion, scene.quaternion);
     }
@@ -71,14 +68,16 @@ function render(){renderer.render(scene, camera);requestAnimFrame(render);};app.
 function toRadians(angle){return angle*(Math.PI/180);}function toDegrees(angle){return angle*(180/Math.PI);}
 
 app.reset=function(){camera.position.z=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
+app.clear=function(){while(scene.children.length > 0){scene.remove(scene.children[0]);}};
 app.DATALOAD();
 };
 
 
 window.app={};
-app.HAY={};app.HAY.stars={length:0};app.HAY.names={};
-app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;
+app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
+app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
 app.DATALOAD=function(){
+/* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read stars.dat into app.HAY.stars */
 var xhr1 = new XMLHttpRequest();
 xhr1.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/stars.dat"); 
@@ -92,6 +91,7 @@ xhr1.onload = function(){var reader = new FileReader();reader.onloadend = functi
     var blob = xhr1.response;blob=blob.slice(14, blob.size);
     reader.readAsArrayBuffer(blob);	
 };xhr1.send();
+/* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read starnames.dat into app.HAY.starnames */
 var xhr2 = new XMLHttpRequest();xhr2.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/starnames.dat"); 
 xhr2.responseType = "blob";//force the HTTP response, response-type header to be blob
@@ -102,6 +102,7 @@ xhr2.onload = function(){var reader = new FileReader();reader.onloadend = functi
 		}app.dataloaded2=true;app.DATALOADED();};
     var blob = xhr2.response;reader.readAsText(blob);	
 };xhr2.send();
+/* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read asterism.dat into app.HAY.asterisms */
 var xhr3 = new XMLHttpRequest();xhr3.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/asterisms.dat"); 
 xhr3.responseType = "blob";//force the HTTP response, response-type header to be blob
@@ -120,16 +121,54 @@ xhr3.onload = function(){var reader = new FileReader();reader.onloadend = functi
 		RSPTEXT='app.HAY.asterisms={'+RSPTEXT+'};';eval(RSPTEXT);
 		app.dataloaded3=true;app.DATALOADED();};
     var blob = xhr3.response;reader.readAsText(blob);	
-};xhr3.send();};
-app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded3){
+};xhr3.send();
+/* -------------------------------------------------------------------------------------------------------------------------- */
+/* Read revised.stc into app.HAY.stars */
+var xhr4 = new XMLHttpRequest();xhr4.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/revised.stc"); 
+xhr4.responseType = "blob";//force the HTTP response, response-type header to be blob
+xhr4.onload = function(){var reader = new FileReader();reader.onloadend = function(evt) { 
+		window.RSPTEXT=evt.target.result;
+		RSPTEXT=RSPTEXT.replace(/#.*/g,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n\n/g,'\n').replace(/{\n /g,'{"').replace(/{\n\t/g,'{"')
+		.replace(/Modify /g,'').replace(/\n\t/g,'\n ').replace(/\n /g,'\',\n"').replace(/ '/g,'\'');
+		RSPTEXT=RSPTEXT.replace(/\',\n"    /g,'').replace(/\n}.*/g,'}').replace(/\n\n/g,'\n');
+		RSPTEXT=RSPTEXT.replace(/ \w{/g,':{').replace(/ \n{/g,':{').replace(/\n/g,'').replace(/}/g,'},\n').replace(/}/g,'\'}').replace(/ /g,'":\'');
+		RSPTEXT=RSPTEXT.replace(/:'":'":'":'":'":'":'":/g,':');
+		RSPTEXT=RSPTEXT.replace(/"'"'":'":'":'":'":'":/g,':');
+		RSPTEXT=RSPTEXT.replace(/":'":'":'":'":'":':/g,':');
+		RSPTEXT=RSPTEXT.replace(/"'"'":'":'":'":'/g,':').replace(/":':/g,':')
+		RSPTEXT=RSPTEXT.replace(/4266{/g,'4266:{');
+		RSPTEXT=RSPTEXT.replace(/:'\(Sr\)"/g,'');
+		RSPTEXT=RSPTEXT.replace(/:'\+":'GIII"/g,'');
+		RSPTEXT=RSPTEXT.replace(/:'\+":'O9.5I"/g,'');
+		RSPTEXT=RSPTEXT.replace(/:'SB"'/g,'\'');
+		RSPTEXT='app.HAY.revised={'+RSPTEXT+'};';eval(RSPTEXT);
+		app.dataloaded4=true;app.DATALOADED();
+		};
+    var blob = xhr4.response;reader.readAsText(blob);	
+};/*xhr4.send();*/};
+app.dataloaded4=true;
+app.cartesian=function(o){var f=false;if(o['RA']){if(o['Dec']){if(o['Distance']){
+	var ra=parseFloat(o['RA']);var dec=parseFloat(o['Dec']);var dist=parseFloat(o['Distance']);
+	var O={x:Math.cos(dec)*Math.cos(ra),
+	y:Math.cos(dec)*Math.sin(ra),
+	z:Math.sin(dec)};O.x=O.x*dist;O.y=O.y*dist;O.z=(O.z*dist)*-1;return O}}}return false};
+app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded3&&app.dataloaded4){		
+		for(var r in app.HAY.revised){try{var C=app.cartesian(app.HAY.revised[r]);if(C){
+		//if(r!=89341){app.HAY.stars[r]=[C.x,C.y,C.z,1,''];}
+		}else{console.log(app.HAY.revised[r]);}}catch(ex){console.log(r+' - '+ex.message);}}
 		for(var m in app.HAY.names){try{app.HAY.stars[app.HAY.names[m]][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}
+		
 		console.log('Data loaded');
 		for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}
 		app.render();
 		document.getElementById('loading').style.display='none';
 		document.getElementById('controls').style.display='initial';
 }};
+app.zodiactoggle=function(elm){
+	if(elm.innerHTML=='zodiac'){app.clear();elm.innerHTML='all';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
+	else{elm.innerHTML='zodiac';app.clear();for(k in app.HAY.asterisms){app.addconstellation(k)}}
+};
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
 </script>
 </head><body onload="myload()";><div id="infoview" style="color:#eeeeee;font-weight:bold;"> </div><div id="loading" style="color:#eeeeee;font-weight:bold;">loading resources from https://cdn.rawgit.com/CelestiaProject/Celestia/ ...<br/><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="color:#eeeeee;font-weight:bold;" style="display:none"><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a><br/>
-CLICK on stars for more info<br/>DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button></div></body></html>
+CLICK on stars for more info<br/>DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button><button onclick="app.zodiactoggle(this)">all</button></div></body></html>
