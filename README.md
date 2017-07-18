@@ -1,9 +1,7 @@
 # stars
 A simple web 3d view of western zodiac signs.
-## Demo
-Check IT OUT!! 
-* PRIMARY URL : https://officinetesla.it/stars/
-* MOUSE WARINING - In the current stage of developement it now needs a mouse with wheel, to rotate and zoom.
+## Demo - check it out!! 
+* https://officinetesla.it/stars/
 ## The data comes from Celestia.org
 * stars.dat
 * starnames.dat
