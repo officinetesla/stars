@@ -5,10 +5,9 @@
 </script><script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/TrackballControls.js"></script>
 </script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
-#infoview{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:rgba(255,255,255,0.5);width:96%}
-#controls{position:absolute;z-index:100;top:20px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
+#controls{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
 #loading{position:absolute;z-index:100;top:0px;left:0;margin-left:2%;background-color:transparent;width:96%;}
-#loading a,#controls a{float:right;color:#FFF}
+#loading a,#controls a{float:right;color:#000;background-color:#FFF}
 button.big{padding:10px 20px 10px 20px}
 input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
@@ -233,10 +232,10 @@ app.starstoggle=function(elm){objects=[];app.clear();
 	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}	
 };
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
-
-
 </script>
-</head><body onload="myload()"; onresize="app.onWindowResize()"><div id="infoview" style="color:#eeeeee;font-weight:bold;display:none;">CLICK on stars for more info</div><div
-	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
+</head><body onload="myload()"; onresize="app.onWindowResize()"><div
+	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div
+	id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
+<div id="infoview" style="color:#eeeeee;font-weight:bold;display:none;">CLICK on stars for more info</div>
 <span id="currzoom">ZOOM OUT!!!</span><br/><button onclick="app.reset()">reset</button> <button onclick="app.zodiactoggle(this)">all constellations</button> <button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button><br/>
 </div></body></html>
