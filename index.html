@@ -5,7 +5,9 @@
 #infoview{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:rgba(255,255,255,0.5);width:96%}
 #controls{position:absolute;z-index:100;top:20px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
 #loading{position:absolute;z-index:100;top:0px;left:0;margin-left:2%;background-color:transparent;width:96%;}
-#loading a,#controls a{float:right;}</style>
+#loading a,#controls a{float:right;}
+button.big{padding:10px 20px 10px 20px}
+input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
 function myload(){var objects = [];var three = THREE;var scene=new three.Scene();
 var camera = new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -42,8 +44,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
         document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
 	/*Start dragging*/
 	if(!flag){isDragging = true;}
-})
-.on('mousemove', function(e) {
+}).on('mousemove', function(e) {
     var deltaMove={x: e.offsetX-previousMousePosition.x,y: e.offsetY-previousMousePosition.y};
     if(isDragging){var deltaRotationQuaternion = new three.Quaternion()
             .setFromEuler(new three.Euler(toRadians(deltaMove.y * 1),toRadians(deltaMove.x * 1),0,'XYZ'));        
@@ -52,7 +53,8 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
     previousMousePosition={x: e.offsetX,y: e.offsetY};
 }).on('DOMMouseScroll mousewheel', function(e) {
 	var wd=e.originalEvent.wheelDelta;var dir=1;if(wd>0){dir=-1}
-	camera.position.z=camera.position.z+((dir*0.5)*camera.position.z);
+	app.zoomBT(Math.abs(wd)/10,dir);
+	//camera.position.z=camera.position.z+((dir*0.5)*camera.position.z);
 });
 $(document).on('mouseup', function(e) {isDragging = false;});
 
@@ -65,10 +67,18 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
         };
 })();
-function render(){renderer.render(scene, camera);requestAnimFrame(render);};app.render=function(){render();}
+function render(){renderer.render(scene, camera);requestAnimFrame(render);app.zoom();};app.render=function(){render();}
 function toRadians(angle){return angle*(Math.PI/180);}function toDegrees(angle){return angle*(180/Math.PI);}
-
-app.reset=function(){camera.position.z=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
+app.zoomreach=10.0;app.zooming=false;
+app.zoom=function(){if(app.zooming){var fdif=app.zoomreach-camera.position.z;var adif=Math.abs(fdif);var dir=1;if(adif!=fdif){dir=-1}
+	var speed=(fdif/100)*adif;
+	if(adif>1000){camera.position.z=app.zoomreach;app.zooming=false;return false;}
+	if((-0.1<speed)&&(speed<0.1)){speed=0.1*dir}camera.position.z+=speed;
+	if(adif<2){app.zooming=false;console.log(camera.position.z);app.zoomreach=camera.position.z}	
+}};
+app.zoomBT=function(v,dir){var d=camera.position.z/12;if(d<1){d=1}var x=((v*0.2*d)*dir);if(dir<0){x=x/2}
+	app.zoomreach+=x;if(app.zoomreach<0.005){app.zoomreach=0.005};if(app.zoomreach>1000){app.zoomreach=1000};app.zooming=true;};
+app.reset=function(){camera.position.z=0.001;app.zoomreach=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
 app.clear=function(){while(scene.children.length > 0){scene.remove(scene.children[0]);}};
 app.DATALOAD();
 };
@@ -167,7 +177,7 @@ app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded
 		document.getElementById('controls').style.display='initial';
 }else{app.dataloaded++;document.getElementById('loadingspan').innerHTML='loading... '+app.dataloaded+'/3';}};
 app.zodiactoggle=function(elm){objects=[];app.clear();
-	if(elm.innerHTML=='zodiac only'){elm.innerHTML='all constallations';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
+	if(elm.innerHTML=='zodiac only'){elm.innerHTML='all constellations';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
 	else{elm.innerHTML='zodiac only';for(k in app.HAY.asterisms){app.addconstellation(k)}}	
 };
 app.starstoggle=function(elm){objects=[];app.clear();
@@ -178,4 +188,6 @@ window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Cor
 </script>
 </head><body onload="myload()";><div id="infoview" style="color:#eeeeee;font-weight:bold;display:none;">CLICK on stars for more info</div><div
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
-DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button> <button onclick="app.zodiactoggle(this)">all constallations</button> <button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button></div></body></html>
+DRAG to rotate, SCROLL to zoom out!<br/><button onclick="app.reset()">reset</button> <button onclick="app.zodiactoggle(this)">all constellations</button> <button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button><br/>
+<input class="big" type="number" value="50" step="10" min="10" max="100" /><button class="big" onclick="app.zoomBT(this.previousSibling.value,-1)">+</button><button class="big" onclick="app.zoomBT(this.previousSibling.previousSibling.value,1)">-</button>
+</div></body></html>
