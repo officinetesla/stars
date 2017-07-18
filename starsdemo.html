@@ -33,7 +33,7 @@ app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();
 
 var isDragging = false;var previousMousePosition = { x: 0, y: 0};
 var raycaster = new THREE.Raycaster();var mouse = new THREE.Vector2();
-$(renderer.domElement).on('mousedown', function(e) {var flag=false;
+$(renderer.domElement).on('mousedown touchstart', function(e) {var flag=false;
 	/*Check clicked object*/
 	var rect = renderer.domElement.getBoundingClientRect();
 	mouse.x=((e.clientX-rect.left)/(rect.width-rect.left))*2-1;
@@ -44,7 +44,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
         document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
 	/*Start dragging*/
 	if(!flag){isDragging = true;}
-}).on('mousemove', function(e) {
+}).on('mousemove touchmove', function(e) {
     var deltaMove={x: e.offsetX-previousMousePosition.x,y: e.offsetY-previousMousePosition.y};
     if(isDragging){var deltaRotationQuaternion = new three.Quaternion()
             .setFromEuler(new three.Euler(toRadians(deltaMove.y * 1),toRadians(deltaMove.x * 1),0,'XYZ'));        
@@ -56,7 +56,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
 	app.zoomBT(Math.abs(wd)/10,dir);
 	//camera.position.z=camera.position.z+((dir*0.5)*camera.position.z);
 });
-$(document).on('mouseup', function(e) {isDragging = false;});
+$(document).on('mouseup touchend', function(e) {isDragging = false;});
 
 // shim layer with setTimeout fallback
 window.requestAnimFrame = (function(){
