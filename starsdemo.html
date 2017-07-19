@@ -6,6 +6,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
 #controls{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
+#controls button{width:150px;height:30px}
 #loading{position:absolute;z-index:100;top:0px;left:0;margin-left:2%;background-color:transparent;width:96%;}
 #loading a,#controls a{float:right;color:#000;background-color:#FFF}
 button.big{padding:10px 20px 10px 20px}
@@ -62,6 +63,7 @@ function animate(){requestAnimationFrame(animate);controls.update();renderer.ren
 function render(){renderer.render(scene,camera);};app.renderstart=function(){animate();}
 function toRadians(angle){return angle*(Math.PI/180);}function toDegrees(angle){return angle*(180/Math.PI);}
 app.clear=function(){while(scene.children.length > 0){scene.remove(scene.children[0]);}};
+app.setzoom=function(v){camera.position.z=v};
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
 /* START DATA LOAD */
 app.DATALOAD();};
@@ -164,5 +166,5 @@ window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Cor
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div
 	id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
 <div id="infoview" style="color:#eeeeee;font-weight:bold;">CLICK on stars for more info</div>
-<span id="currzoom">ZOOM OUT!!!</span><br/><!--<button onclick="app.reset()">reset</button>--><button onclick="app.zodiactoggle(this)">all constellations</button> <button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button><br/>
+<span id="currzoom">ZOOM OUT!!!</span><br/><!--<button onclick="app.reset()">reset</button>--><button onclick="app.zodiactoggle(this)">all constellations</button><button onclick="app.starstoggle(this)" style="float:right;color:#F00">stars [only high cpu]</button><br/><button onclick="app.setzoom(200)">jump to zoom 200</button> <br/>
 </div></body></html>
