@@ -11,13 +11,15 @@
 button.big{padding:10px 20px 10px 20px}
 input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
-function myload(){
+window.app={HAY:{stars:{length:0},names:{},revised:{}},
+dataloaded:0,dataloaded1:false,dataloaded2:false,dataloaded3:false,dataloaded4:false};
+app.load=function(){
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
 /* INIT SCENE AND POPULATION FUNCTIONS */
 var objects = [];var three = THREE;var scene=new three.Scene();
 var camera=new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 3500);
 var renderer=new three.WebGLRenderer();renderer.setPixelRatio( window.devicePixelRatio );renderer.setSize(window.innerWidth, window.innerHeight);
-var controls=new three.TrackballControls( camera );
+var controls=new three.TrackballControls(camera);
 controls.rotateSpeed = 2.0;
 controls.zoomSpeed = 2;controls.noZoom = false;controls.noPan = true;controls.staticMoving = true;
 controls.dynamicDampingFactor = 0.1;
@@ -37,7 +39,7 @@ app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
 		D=app.HAY.stars[sidx];if(D){app.HAY.stars[sidx][5]=CN;newline.vertices.push(new THREE.Vector3(D[0],D[1],D[2]));}
 	}}}}scene.add(new THREE.Line(newline,linematerial));};	
 app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();star2.position.setX(D[0]);star2.position.setY(D[1]);star2.position.setZ(D[2]);
-	/*star2.scale.set(D[3],D[3],D[3]);*/star2.AppData={t:'star',idx:idx};scene.add(star2);objects.push(star2);}};
+	star2.scale.set(D[6]/50,D[6]/50,D[6]/50);star2.AppData={t:'star',idx:idx};scene.add(star2);objects.push(star2);}};
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
 /* INIT EVENTS */
 var raycaster = new THREE.Raycaster();var mouse = new THREE.Vector2();
@@ -54,8 +56,7 @@ $(document).on('mouseup touchend', function(e) {document.getElementById('currzoo
 $(window).on('resize',function(e){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth,window.innerHeight);controls.handleResize();render();});
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
-/* INIT EVENTS */
-// shim layer with setTimeout fallback
+/* scene render + shim layer with setTimeout fallback */
 window.requestAnimFrame=(function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||function(callback){window.setTimeout(callback, 1000 / 60);};})();
 function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};
 function render(){renderer.render(scene,camera);};app.renderstart=function(){animate();}
@@ -64,8 +65,6 @@ app.clear=function(){while(scene.children.length > 0){scene.remove(scene.childre
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
 /* START DATA LOAD */
 app.DATALOAD();};
-window.app={};app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
-app.dataloaded=0;app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
 app.DATALOAD=function(){
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read stars.dat into app.HAY.stars */
@@ -142,7 +141,11 @@ app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded
 			//if(r!=89341){app.HAY.stars[r]=[C.x,C.y,C.z,1,''];}
 		}else{console.log(app.HAY.revised[r]);}}catch(ex){console.log(r+' - '+ex.message);}}
 		/*FIXING NAMES*/
-		for(var m in app.HAY.names){try{app.HAY.stars[app.HAY.names[m]][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}		
+		var n;
+		for(var m in app.HAY.names){try{n=app.HAY.names[m]
+		app.HAY.stars[n][6]=Math.sqrt(Math.pow(app.HAY.stars[n][0],2)+Math.pow(app.HAY.stars[n][1],2)+Math.pow(app.HAY.stars[n][2],2));
+		console.log(app.HAY.stars[n][6]);
+		app.HAY.stars[n][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}		
 		/*UPDATE UI*/
 		console.log('Data loaded');$('#loading').hide();$('#controls').show();
 		/*POPULATE SCENE*/
@@ -157,7 +160,7 @@ app.starstoggle=function(elm){objects=[];app.clear();
 	if(elm.innerHTML.indexOf('stars')>-1){elm.innerHTML='asterisms';for(k in app.HAY.stars){app.addstar(k)}}
 	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}};
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
-</script></head><body onload="myload()";><div
+</script></head><body onload="app.load()";><div
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div
 	id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
 <div id="infoview" style="color:#eeeeee;font-weight:bold;">CLICK on stars for more info</div>
