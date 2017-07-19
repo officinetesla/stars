@@ -12,6 +12,7 @@
 button.big{padding:10px 20px 10px 20px}
 input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
+	window.scount=0;
 window.app={HAY:{stars:{length:0},names:{},revised:{}},
 dataloaded:0,dataloaded1:false,dataloaded2:false,dataloaded3:false,dataloaded4:false};
 app.load=function(){
@@ -40,7 +41,7 @@ app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
 		D=app.HAY.stars[sidx];if(D){app.HAY.stars[sidx][5]=CN;newline.vertices.push(new THREE.Vector3(D[0],D[1],D[2]));}
 	}}}}scene.add(new THREE.Line(newline,linematerial));};	
 app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();star2.position.setX(D[0]);star2.position.setY(D[1]);star2.position.setZ(D[2]);
-	star2.scale.set(D[6]/50,D[6]/50,D[6]/50);star2.AppData={t:'star',idx:idx};scene.add(star2);objects.push(star2);}};
+	star2.scale.set(D[6]/50,D[6]/50,D[6]/50);star2.AppData={t:'star',idx:idx};window.scount++;scene.add(star2);objects.push(star2);}};
 /* ------------------------------------------------------------------------------------------------------------------------------------------- */
 /* INIT EVENTS */
 var raycaster = new THREE.Raycaster();var mouse = new THREE.Vector2();
