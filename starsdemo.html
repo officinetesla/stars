@@ -11,7 +11,10 @@
 button.big{padding:10px 20px 10px 20px}
 input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
-function myload(){var objects = [];var three = THREE;var scene=new three.Scene();
+function myload(){
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* INIT SCENE AND POPULATION FUNCTIONS */
+var objects = [];var three = THREE;var scene=new three.Scene();
 var camera=new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 3500);
 var renderer=new three.WebGLRenderer();renderer.setPixelRatio( window.devicePixelRatio );renderer.setSize(window.innerWidth, window.innerHeight);
 var controls=new three.TrackballControls( camera );
@@ -21,25 +24,22 @@ controls.dynamicDampingFactor = 0.1;
 controls.keys = [ 65, 83, 68 ];
 controls.addEventListener( 'change', render );
 document.body.appendChild(renderer.domElement);
-
+three.ImageUtils.crossOrigin = '';
 //var geometry = new three.BoxGeometry(0.5, 0.5, 0.5);
 var geometry = new three.SphereGeometry(0.50, 32, 32 );
-three.ImageUtils.crossOrigin = '';
 var material = new THREE.MeshBasicMaterial({color:0xF0ff00});
 var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
 camera.position.z = 1;
-
 app.addconstellation=function(name){for(var l=0;l<app.HAY.asterisms[name].length;l++){if(app.HAY.asterisms[name][l]){app.addline(app.HAY.asterisms[name][l],name);}}};
 app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
 	for(var s=0;s<L.length;s++){if(L[s]){if(L[s]!='null'){sidx=app.HAY.names[L[s].toLowerCase()];if(sidx){app.addstar(sidx);
 		D=app.HAY.stars[sidx];if(D){app.HAY.stars[sidx][5]=CN;newline.vertices.push(new THREE.Vector3(D[0],D[1],D[2]));}
-		}}}}
-	scene.add(new THREE.Line(newline,linematerial));};	
+	}}}}scene.add(new THREE.Line(newline,linematerial));};	
 app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();star2.position.setX(D[0]);star2.position.setY(D[1]);star2.position.setZ(D[2]);
 	/*star2.scale.set(D[3],D[3],D[3]);*/star2.AppData={t:'star',idx:idx};scene.add(star2);objects.push(star2);}};
-
-var isDragging = false;var isZooming = false;var previousMousePosition = { x: 0, y: 0};
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* INIT EVENTS */
 var raycaster = new THREE.Raycaster();var mouse = new THREE.Vector2();
 $(renderer.domElement).on('mousedown', function(e) {var flag=false;
 	var rect = renderer.domElement.getBoundingClientRect();
@@ -51,29 +51,19 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
         document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
 }).on('DOMMouseScroll mousewheel', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
 $(document).on('mouseup touchend', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
-
-app.onWindowResize=function(){camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	controls.handleResize();
-	render();}
-
+$(window).on('resize',function(e){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth,window.innerHeight);controls.handleResize();render();});
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* INIT EVENTS */
 // shim layer with setTimeout fallback
-window.requestAnimFrame = (function(){
-    return  window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        function(callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-})();
-
+window.requestAnimFrame=(function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||function(callback){window.setTimeout(callback, 1000 / 60);};})();
 function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};
-function render(){renderer.render(scene,camera);};app.render=function(){animate();}
+function render(){renderer.render(scene,camera);};app.renderstart=function(){animate();}
 function toRadians(angle){return angle*(Math.PI/180);}function toDegrees(angle){return angle*(180/Math.PI);}
 app.clear=function(){while(scene.children.length > 0){scene.remove(scene.children[0]);}};
-app.DATALOAD();
-};
+/* ------------------------------------------------------------------------------------------------------------------------------------------- */
+/* START DATA LOAD */
+app.DATALOAD();};
 window.app={};app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
 app.dataloaded=0;app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
 app.DATALOAD=function(){
@@ -88,26 +78,24 @@ xhr1.onload = function(){var reader = new FileReader();reader.onloadend = functi
 			NN=new Int32Array(BB,b,4);MM=new Int16Array(BB,b+16,2);AA=new Float32Array(BB,b+4,12);
 			app.HAY.stars[NN[0]]=[AA[0],AA[1],AA[2],MM[0]/256,''];n++;app.HAY.stars.length++;
 	}app.dataloaded1=true;app.DATALOADED();};
-    var blob = xhr1.response;blob=blob.slice(14, blob.size);
-    reader.readAsArrayBuffer(blob);	
-};xhr1.send();
+    var blob=xhr1.response;blob=blob.slice(14, blob.size);
+	reader.readAsArrayBuffer(blob);};xhr1.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read starnames.dat into app.HAY.starnames */
 var xhr2 = new XMLHttpRequest();xhr2.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/starnames.dat"); 
 xhr2.responseType = "blob";//force the HTTP response, response-type header to be blob
-xhr2.onload = function(){var reader = new FileReader();reader.onloadend = function(evt) { 
+xhr2.onload=function(){var reader = new FileReader();reader.onloadend=function(evt){ 
 		var NAMES=evt.target.result.split('\n');var t='';var m;var tn='';
 		for(var n=0;n<NAMES.length;n++){t=NAMES[n].split(':');
 			for(m=1;m<t.length;m++){app.HAY.names[t[m].toLowerCase()]=t[0];}
 		}app.dataloaded2=true;app.DATALOADED();};
-    var blob = xhr2.response;reader.readAsText(blob);	
-};xhr2.send();
+    var blob=xhr2.response;reader.readAsText(blob);};xhr2.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read asterism.dat into app.HAY.asterisms */
 var xhr3 = new XMLHttpRequest();xhr3.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/asterisms.dat"); 
 xhr3.responseType = "blob";//force the HTTP response, response-type header to be blob
-xhr3.onload = function(){var reader = new FileReader();reader.onloadend = function(evt) { 
-		var RSPTEXT=evt.target.result
+xhr3.onload = function(){var reader = new FileReader();reader.onloadend=function(evt){ 
+	var RSPTEXT=evt.target.result
 		.replace(/Alpha/g,'ALF').replace(/Beta/g,'BET').replace(/Gamma/g,'GAM')
 		.replace(/Delta/g,'DEL').replace(/Epsilon/g,'EPS').replace(/Iota/g,'IOT')
 		.replace(/Kappa/g,'KAP').replace(/Lambda/g,'LAM').replace(/Omega/g,'OME')
@@ -120,8 +108,7 @@ xhr3.onload = function(){var reader = new FileReader();reader.onloadend = functi
 		.replace(/  /g,' ').replace(/" "/g,'","').replace(/"\n "/g,'","').replace(/]\[/g,'],[');
 		RSPTEXT='app.HAY.asterisms={'+RSPTEXT+'};';eval(RSPTEXT);
 		app.dataloaded3=true;app.DATALOADED();};
-    var blob = xhr3.response;reader.readAsText(blob);	
-};xhr3.send();
+    var blob = xhr3.response;reader.readAsText(blob);};xhr3.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read revised.stc into app.HAY.stars */
 var xhr4 = new XMLHttpRequest();xhr4.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/revised.stc"); 
@@ -142,40 +129,35 @@ xhr4.onload = function(){var reader = new FileReader();reader.onloadend = functi
 		RSPTEXT=RSPTEXT.replace(/:'\+":'O9.5I"/g,'');
 		RSPTEXT=RSPTEXT.replace(/:'SB"'/g,'\'');
 		RSPTEXT='app.HAY.revised={'+RSPTEXT+'};';eval(RSPTEXT);
-		app.dataloaded4=true;app.DATALOADED();
-		};
+		app.dataloaded4=true;app.DATALOADED();};
     var blob = xhr4.response;reader.readAsText(blob);	
-};/*xhr4.send();*/};
-app.dataloaded4=true;
+};/*xhr4.send();*/};app.dataloaded4=true;
 app.cartesian=function(o){var f=false;if(o['RA']){if(o['Dec']){if(o['Distance']){
 	var ra=parseFloat(o['RA']);var dec=parseFloat(o['Dec']);var dist=parseFloat(o['Distance']);
-	var O={x:Math.cos(dec)*Math.cos(ra),
-	y:Math.cos(dec)*Math.sin(ra),
-	z:Math.sin(dec)};O.x=O.x*dist;O.y=O.y*dist;O.z=(O.z*dist)*-1;return O}}}return false};
-app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded3&&app.dataloaded4){		
+	var O={x:Math.cos(dec)*Math.cos(ra),y:Math.cos(dec)*Math.sin(ra),z:Math.sin(dec)};
+	O.x=O.x*dist;O.y=O.y*dist;O.z=(O.z*dist)*-1;return O}}}return false};
+app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded3&&app.dataloaded4){
+		/*MERGE REVISED DB*/	
 		for(var r in app.HAY.revised){try{var C=app.cartesian(app.HAY.revised[r]);if(C){
-		//if(r!=89341){app.HAY.stars[r]=[C.x,C.y,C.z,1,''];}
+			//if(r!=89341){app.HAY.stars[r]=[C.x,C.y,C.z,1,''];}
 		}else{console.log(app.HAY.revised[r]);}}catch(ex){console.log(r+' - '+ex.message);}}
-		for(var m in app.HAY.names){try{app.HAY.stars[app.HAY.names[m]][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}
-		
-		console.log('Data loaded');
+		/*FIXING NAMES*/
+		for(var m in app.HAY.names){try{app.HAY.stars[app.HAY.names[m]][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}		
+		/*UPDATE UI*/
+		console.log('Data loaded');$('#loading').hide();$('#controls').show();
+		/*POPULATE SCENE*/
 		for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}
-		app.render();
-		document.getElementById('loading').style.display='none';
-		document.getElementById('infoview').style.display='initial';
-		document.getElementById('controls').style.display='initial';
+		/*START RENDERING*/
+		app.renderstart();
 }else{app.dataloaded++;document.getElementById('loadingspan').innerHTML='loading... '+app.dataloaded+'/3';}};
 app.zodiactoggle=function(elm){objects=[];app.clear();
 	if(elm.innerHTML=='zodiac only'){elm.innerHTML='all constellations';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
-	else{elm.innerHTML='zodiac only';for(k in app.HAY.asterisms){app.addconstellation(k)}}	
-};
+	else{elm.innerHTML='zodiac only';for(k in app.HAY.asterisms){app.addconstellation(k)}}};
 app.starstoggle=function(elm){objects=[];app.clear();
 	if(elm.innerHTML.indexOf('stars')>-1){elm.innerHTML='asterisms';for(k in app.HAY.stars){app.addstar(k)}}
-	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}	
-};
+	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}};
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
-</script>
-</head><body onload="myload()"; onresize="app.onWindowResize()"><div
+</script></head><body onload="myload()";><div
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a></div><div
 	id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
 <div id="infoview" style="color:#eeeeee;font-weight:bold;display:none;">CLICK on stars for more info</div><br/>
