@@ -1,9 +1,9 @@
 <!doctype html>
 <html><head><title>STARS DEMO - officine tesla</title><!-- coded by h.a.y. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-<script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js">
-</script><script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js">
-</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
 #controls{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
 #loading{position:absolute;z-index:100;top:0px;left:0;margin-left:2%;background-color:transparent;width:96%;}
@@ -12,26 +12,14 @@ button.big{padding:10px 20px 10px 20px}
 input.big{font-size:29px;position:relative;top:5px;width:60px;}</style>
 <script>
 function myload(){var objects = [];var three = THREE;var scene=new three.Scene();
-var camera = new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 3500);
-var renderer = new three.WebGLRenderer();
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize(window.innerWidth, window.innerHeight);
+var camera=new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 3500);
+var renderer=new three.WebGLRenderer();renderer.setPixelRatio( window.devicePixelRatio );renderer.setSize(window.innerWidth, window.innerHeight);
 var controls=new three.TrackballControls( camera );
-
-				controls.rotateSpeed = 2.0;
-				controls.zoomSpeed = 2;
-				controls.panSpeed = 2;
-
-				controls.noZoom = false;
-				controls.noPan = true;
-
-				controls.staticMoving = true;
-				controls.dynamicDampingFactor = 0.1;
-
-				controls.keys = [ 65, 83, 68 ];
-
-				controls.addEventListener( 'change', render );
-
+controls.rotateSpeed = 2.0;
+controls.zoomSpeed = 2;controls.noZoom = false;controls.noPan = true;controls.staticMoving = false;
+controls.dynamicDampingFactor = 0.1;
+controls.keys = [ 65, 83, 68 ];
+controls.addEventListener( 'change', render );
 document.body.appendChild(renderer.domElement);
 
 //var geometry = new three.BoxGeometry(0.5, 0.5, 0.5);
@@ -54,7 +42,6 @@ app.addstar=function(idx){var D=app.HAY.stars[idx];if(D){var star2=star.clone();
 var isDragging = false;var isZooming = false;var previousMousePosition = { x: 0, y: 0};
 var raycaster = new THREE.Raycaster();var mouse = new THREE.Vector2();
 $(renderer.domElement).on('mousedown', function(e) {var flag=false;
-	/*Check clicked object*/
 	var rect = renderer.domElement.getBoundingClientRect();
 	mouse.x=((e.clientX-rect.left)/(rect.width-rect.left))*2-1;
 	mouse.y=-((e.clientY-rect.top)/(rect.bottom-rect.top))*2+1;
@@ -62,33 +49,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
     intersects = raycaster.intersectObjects(objects);
     if(intersects.length>0){var idx=intersects[0].object.AppData.idx;var d=app.HAY.stars[idx];
         document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
-	/*Start dragging*/
-	
-	//if(!flag){isDragging = true;}
 }).on('DOMMouseScroll mousewheel', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
-/*.on('mousemove touchmove', function(e) {
-    var deltaMove={x:(e.offsetX-previousMousePosition.x)*-1,y: e.offsetY-previousMousePosition.y};
-	if(e.originalEvent.changedTouches[0]){
-		var touchobj = e.originalEvent.changedTouches[0];
-		deltaMove={x:touchobj.clientX-previousMousePosition.x,y:touchobj.clientY-previousMousePosition.y};
-		if(e.originalEvent.changedTouches[1]){
-		
-	}else{isDragging=true;}}
-    if(isDragging){var deltaRotationQuaternion = new three.Quaternion()
-            .setFromEuler(new three.Euler(toRadians(deltaMove.y * 1),toRadians(deltaMove.x * 1),0,'XYZ'));
-		document.getElementById('infoview').innerHTML=e.offsetX;
-        scene.quaternion.multiplyQuaternions(deltaRotationQuaternion, scene.quaternion);
-    } 
-	if(isZooming){app.zooming=true;
-        var k=deltaMove.x;if(deltaMove.y>k){k=deltaMove.y}
-		app.zoomreach+=k;
-    }
-    previousMousePosition={x: e.offsetX||e.originalEvent.changedTouches[0].clientX,y: e.offsetY||e.originalEvent.changedTouches[0].clientY};
-}).on('DOMMouseScroll mousewheel', function(e) {
-	var wd=e.originalEvent.wheelDelta;var dir=1;if(wd>0){dir=-1}
-	app.zoomBT(Math.abs(wd)/10,dir);
-	//camera.position.z=camera.position.z+((dir*0.5)*camera.position.z);
-});*/
 $(document).on('mouseup touchend', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
 
 app.onWindowResize=function(){camera.aspect = window.innerWidth / window.innerHeight;
@@ -108,31 +69,12 @@ window.requestAnimFrame = (function(){
 })();
 
 function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera);};
-function render(){renderer.render(scene,camera);};
-//function render(){renderer.render(scene, camera);requestAnimFrame(render);controls.update();};
-
-app.render=function(){animate();}
-
-
+function render(){renderer.render(scene,camera);};app.render=function(){animate();}
 function toRadians(angle){return angle*(Math.PI/180);}function toDegrees(angle){return angle*(180/Math.PI);}
-
-app.zoomreach=10.0;app.zooming=false;
-app.zoom=function(){if(app.zooming){var fdif=app.zoomreach-camera.position.z;var adif=Math.abs(fdif);var dir=1;if(adif!=fdif){dir=-1}
-	var speed=(fdif/100)*adif;
-	if(adif>1000){camera.position.z=app.zoomreach;app.zooming=false;return false;}
-	if((-0.1<speed)&&(speed<0.1)){speed=0.1*dir}camera.position.z+=speed;
-	if(adif<2){app.zooming=false;console.log(camera.position.z);app.zoomreach=camera.position.z}	
-}};
-app.zoomBT=function(v,dir){var d=camera.position.z/12;if(d<1){d=1}var x=((v*0.2*d)*dir);if(dir<0){x=x/2}
-	app.zoomreach+=x;if(app.zoomreach<0.005){app.zoomreach=0.005};if(app.zoomreach>1000){app.zoomreach=1000};app.zooming=true;};
-app.reset=function(){camera.position.z=0.001;app.zoomreach=0.001;scene.quaternion.set(0.5001856125531934,-0.415030000105589,0.6652291136014553,-0.36747064974525334);};
 app.clear=function(){while(scene.children.length > 0){scene.remove(scene.children[0]);}};
 app.DATALOAD();
 };
-
-
-window.app={};
-app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
+window.app={};app.HAY={};app.HAY.stars={length:0};app.HAY.names={};app.HAY.revised={};
 app.dataloaded=0;app.dataloaded1=false;app.dataloaded2=false;app.dataloaded3=false;app.dataloaded4=false;
 app.DATALOAD=function(){
 /* -------------------------------------------------------------------------------------------------------------------------- */
