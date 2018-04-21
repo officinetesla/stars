@@ -162,7 +162,7 @@ app.zodiactoggle=function(elm){objects=[];app.clear();
 app.starstoggle=function(elm){objects=[];app.clear();
 	if(elm.innerHTML.indexOf('stars')>-1){elm.innerHTML='asterisms';for(k in app.HAY.stars){app.addstar(k)}}
 	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}};
-window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Corona Australis","Corona Borealis","Gemini","Leo","Libra","Orion","Pisces","Sagittarius","Scorpius","Taurus","Ursa Major","Ursa Minor","Virgo"];
+window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Gemini","Leo","Libra","Pisces","Sagittarius","Scorpius","Taurus","Virgo"];
 </script></head><body onload="app.load()";><div
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">&nbsp;https://github.com/officinetesla/stars&nbsp;</a></div><div
 	id="controls" style="display:none" ><a href="https://github.com/officinetesla/stars">https://github.com/officinetesla/stars</a>
