@@ -52,7 +52,7 @@ $(renderer.domElement).on('mousedown', function(e) {var flag=false;
 	raycaster.setFromCamera(mouse,camera);
     intersects = raycaster.intersectObjects(objects);
     if(intersects.length>0){var idx=intersects[0].object.AppData.idx;var d=app.HAY.stars[idx];
-        document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+']';}
+        document.getElementById('infoview').innerHTML='['+d[5]+'] - Name: '+d[4].substring(0,d[4].length-1)+' - Magnitude: '+d[3]+' - Hipparcos Catalog Number: '+idx+' - ['+d[0]+','+d[1]+','+d[2]+'] - Distance '+d[6];}
 }).on('DOMMouseScroll mousewheel', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
 $(document).on('mouseup touchend', function(e) {document.getElementById('currzoom').innerHTML='current zoom: '+camera.position.z});
 $(window).on('resize',function(e){camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();
@@ -147,7 +147,7 @@ app.DATALOADED=function(err){if(app.dataloaded1&&app.dataloaded2&&app.dataloaded
 		var n;
 		for(var m in app.HAY.names){try{n=app.HAY.names[m]
 		app.HAY.stars[n][6]=Math.sqrt(Math.pow(app.HAY.stars[n][0],2)+Math.pow(app.HAY.stars[n][1],2)+Math.pow(app.HAY.stars[n][2],2));
-		console.log(app.HAY.stars[n][6]);
+		//console.log(app.HAY.stars[n][6]);
 		app.HAY.stars[n][4]+=m+','}catch(ex){console.log(m+'-'+app.HAY.names[m]);}}		
 		/*UPDATE UI*/
 		console.log('Data loaded');$('#loading').hide();$('#controls').show();
