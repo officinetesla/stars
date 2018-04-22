@@ -35,6 +35,12 @@ var material = new THREE.MeshBasicMaterial({color:0xF0ff00});
 var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
 camera.position.z = 1;
+app.addplane=function(){
+var geometry = new THREE.PlaneGeometry( 5, 20, 32 );
+var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geometry, material );
+scene.add( plane );
+};
 app.addconstellation=function(name){for(var l=0;l<app.HAY.asterisms[name].length;l++){if(app.HAY.asterisms[name][l]){app.addline(app.HAY.asterisms[name][l],name);}}};
 app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
 	for(var s=0;s<L.length;s++){if(L[s]){if(L[s]!='null'){sidx=app.HAY.names[L[s].toLowerCase()];if(sidx){app.addstar(sidx);
@@ -161,7 +167,9 @@ app.zodiactoggle=function(elm){objects=[];app.clear();
 	else{elm.innerHTML='zodiac only';for(k in app.HAY.asterisms){app.addconstellation(k)}}};
 app.starstoggle=function(elm){objects=[];app.clear();
 	if(elm.innerHTML.indexOf('stars')>-1){elm.innerHTML='asterisms';for(k in app.HAY.stars){app.addstar(k)}}
-	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}};
+	else{elm.innerHTML='stars [only high cpu]';for(var z=0;z<ZODIAC.length;z++){app.addconstellation(ZODIAC[z])}}
+	app.addplane()      
+};
 window.ZODIAC=["Aquarius","Aries","Cancer","Capricornus","Gemini","Leo","Libra","Pisces","Sagittarius","Scorpius","Taurus","Virgo"];
 </script></head><body onload="app.load()";><div
 	id="loading" style="color:#eeeeee;font-weight:bold;"><span id="loadingspan">loading... 0/3</span> [resources from https://cdn.rawgit.com/CelestiaProject/Celestia/]<a href="https://github.com/officinetesla/stars">&nbsp;https://github.com/officinetesla/stars&nbsp;</a></div><div
