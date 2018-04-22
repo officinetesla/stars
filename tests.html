@@ -36,7 +36,7 @@ var star = new three.Mesh(geometry, material);
 var linematerial = new THREE.LineBasicMaterial({color: 0xff0000});
 camera.position.z = 1;
 app.addplane=function(){
-var geometry = new THREE.PlaneGeometry(20, 20, 20 );
+var geometry = new THREE.PlaneGeometry(20, 20, 32);
 var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
 var plane = new THREE.Mesh( geometry, material );
 scene.add( plane );
