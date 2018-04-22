@@ -40,6 +40,7 @@ var geometry = new THREE.PlaneGeometry(20, 20, 20 );
 var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
 var plane = new THREE.Mesh( geometry, material );
 scene.add( plane );
+objects.push(plane);
 };
 app.addconstellation=function(name){for(var l=0;l<app.HAY.asterisms[name].length;l++){if(app.HAY.asterisms[name][l]){app.addline(app.HAY.asterisms[name][l],name);}}};
 app.addline=function(L,CN){var newline=new THREE.Geometry();var D;var sidx;
