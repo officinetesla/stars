@@ -1,8 +1,8 @@
 <!doctype html>
 <html><head><title>STARS DEMO - officine tesla</title><!-- coded by h.a.y. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-<script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
-<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js/examples/js/controls/TrackballControls.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
 <style>html,body{overflow:hidden;margin:0;padding:0;height:100%;width:100%;}
 #controls{position:absolute;z-index:100;top:0px;margin-left:2%;background-color:transparent;width:96%;color:#eeeeee;font-weight:bold;}
@@ -72,7 +72,9 @@ app.DATALOAD=function(){
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read stars.dat into app.HAY.stars */
 var xhr1 = new XMLHttpRequest();
-xhr1.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/stars.dat"); 
+	
+//xhr1.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/stars.dat"); 
+xhr1.open("GET", "https://cdn.jsdelivr.net/gh/CelestiaProject/Celestia/data/stars.dat"); 
 xhr1.responseType = "blob";
 xhr1.onload = function(){var reader = new FileReader();reader.onloadend = function(evt) {	  
 		var BB=evt.target.result;var NN;var MM;var AA;var n=1;var max=BB.byteLength-21;var len=0;  
@@ -84,7 +86,7 @@ xhr1.onload = function(){var reader = new FileReader();reader.onloadend = functi
 	reader.readAsArrayBuffer(blob);};xhr1.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read starnames.dat into app.HAY.starnames */
-var xhr2 = new XMLHttpRequest();xhr2.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/starnames.dat"); 
+var xhr2 = new XMLHttpRequest();xhr2.open("GET", "https://cdn.jsdelivr.net/gh/CelestiaProject/Celestia/data/starnames.dat"); 
 xhr2.responseType = "blob";//force the HTTP response, response-type header to be blob
 xhr2.onload=function(){var reader = new FileReader();reader.onloadend=function(evt){ 
 		var NAMES=evt.target.result.split('\n');var t='';var m;var tn='';
@@ -94,7 +96,7 @@ xhr2.onload=function(){var reader = new FileReader();reader.onloadend=function(e
     var blob=xhr2.response;reader.readAsText(blob);};xhr2.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read asterism.dat into app.HAY.asterisms */
-var xhr3 = new XMLHttpRequest();xhr3.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/asterisms.dat"); 
+var xhr3 = new XMLHttpRequest();xhr3.open("GET", "https://cdn.jsdelivr.net/gh/CelestiaProject/Celestia/data/asterisms.dat"); 
 xhr3.responseType = "blob";//force the HTTP response, response-type header to be blob
 xhr3.onload = function(){var reader = new FileReader();reader.onloadend=function(evt){ 
 	var RSPTEXT=evt.target.result
@@ -113,7 +115,7 @@ xhr3.onload = function(){var reader = new FileReader();reader.onloadend=function
     var blob = xhr3.response;reader.readAsText(blob);};xhr3.send();
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* Read revised.stc into app.HAY.stars */
-var xhr4 = new XMLHttpRequest();xhr4.open("GET", "https://cdn.rawgit.com/CelestiaProject/Celestia/401673d1/data/revised.stc"); 
+var xhr4 = new XMLHttpRequest();xhr4.open("GET", "https://cdn.jsdelivr.net/gh/CelestiaProject/Celestia/data/revised.stc"); 
 xhr4.responseType = "blob";//force the HTTP response, response-type header to be blob
 xhr4.onload = function(){var reader = new FileReader();reader.onloadend = function(evt) { 
 		window.RSPTEXT=evt.target.result;
