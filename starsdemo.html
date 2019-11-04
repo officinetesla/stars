@@ -21,7 +21,7 @@ app.load=function(){
 var objects = [];var three = THREE;var scene=new three.Scene();
 var camera=new three.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 1, 3500);
 var renderer=new three.WebGLRenderer();renderer.setPixelRatio( window.devicePixelRatio );renderer.setSize(window.innerWidth, window.innerHeight);
-var controls=new three.TrackballControls(camera);
+var controls=new three.TrackballControls(camera,document.body);
 controls.rotateSpeed = 2.0;
 controls.zoomSpeed = 2;controls.noZoom = false;controls.noPan = true;controls.staticMoving = true;
 controls.dynamicDampingFactor = 0.1;
